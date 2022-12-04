@@ -1,0 +1,22 @@
+import { useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom"
+import { getUser } from "../features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "../store/hook";
+
+export const Student = () => {
+    const user = useAppSelector(state => state.userDate.user);
+    const [response, setResponse] = useState(false)
+    const dispatch = useAppDispatch()
+    console.log(user);
+
+    useEffect(() => {
+        dispatch(getUser(user)).unwrap().then(r => {
+            setResponse(true)
+        })
+    }, [dispatch])
+    if ('id' in user) {
+        return (user.verify == 0) ? <Outlet /> : <Navigate to="/teacher" replace={true} />
+    } else {
+        return <>{response && <Navigate to="/" replace={true} />}</>
+    }
+}
